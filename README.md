@@ -25,6 +25,24 @@ Claude Code picks them up automatically — no restart needed.
 
 ## Add a skill
 
+### With Claude (recommended)
+
+Open Claude Code with this repo as the working directory, then ask:
+
+> "Create a skill called `my-skill-name` that does X. Save it to `~/personal-skills/skills/`, run `./setup.sh`, and commit it."
+
+Claude will write the `SKILL.md`, install the symlink, validate with `./test.sh`, and make a commit. Push when ready:
+
+```bash
+git push
+```
+
+> **Important:** say "save it to `~/personal-skills/skills/`" explicitly — otherwise Claude may write
+> directly to `~/.claude/skills/`, which works but isn't version controlled and can be overwritten
+> by a Cerebras sync if names ever collide.
+
+### Manually
+
 1. Create a directory and `SKILL.md` inside it:
 
 ```
@@ -56,11 +74,14 @@ What this skill does and when to use it.
 What the user gets at the end.
 ```
 
-3. Install and verify:
+3. Install, verify, and commit:
 
 ```bash
-./setup.sh        # creates the symlink
-./test.sh         # validates frontmatter, symlinks, and name conflicts
+./setup.sh                          # creates the symlink
+./test.sh                           # validates frontmatter, symlinks, and name conflicts
+git add skills/my-skill-name/
+git commit -m "Add my-skill-name skill"
+git push
 ```
 
 4. Use it in Claude Code: `/my-skill-name`
