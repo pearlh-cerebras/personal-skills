@@ -27,19 +27,20 @@ Claude Code picks them up automatically — no restart needed.
 
 ### With Claude (recommended)
 
-Open Claude Code with this repo as the working directory, then ask:
+Paste this into Claude Code, filling in the name and description:
 
-> "Create a skill called `my-skill-name` that does X. Save it to `~/personal-skills/skills/`, run `./setup.sh`, and commit it."
-
-Claude will write the `SKILL.md`, install the symlink, validate with `./test.sh`, and make a commit. Push when ready:
-
-```bash
-git push
+```
+Create a skill called `my-skill-name` that does X.
+Save it to ~/personal-skills/skills/my-skill-name/SKILL.md,
+run ./setup.sh to install it, run ./test.sh to validate,
+then commit and push it to the personal-skills repo.
 ```
 
-> **Important:** say "save it to `~/personal-skills/skills/`" explicitly — otherwise Claude may write
-> directly to `~/.claude/skills/`, which works but isn't version controlled and can be overwritten
-> by a Cerebras sync if names ever collide.
+Claude will write the `SKILL.md`, install the symlink, validate, commit, and push.
+
+> **Important:** include the `~/personal-skills/skills/` path explicitly. Without it,
+> Claude may write directly to `~/.claude/skills/`, which isn't version controlled and
+> can be silently overwritten by a Cerebras sync if names ever collide.
 
 ### Manually
 
