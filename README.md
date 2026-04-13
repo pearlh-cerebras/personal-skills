@@ -88,30 +88,26 @@ git push
 
 ### Picking a name — check first
 
-Skill names must be unique across everything installed in `~/.claude/skills/`. Before
-picking a name, see what's already taken:
+Cerebras team skills are symlinked into `~/.claude/skills/` at session start, so that
+directory shows you all names that are taken:
 
 ```bash
 ls ~/.claude/skills/
 ```
 
-Or in Claude Code, type `/` and browse the autocomplete list.
+Or type `/` in Claude Code and browse the autocomplete list.
 
-**`test.sh` also catches conflicts automatically** — it checks your skill names against
-both the Cerebras registry and any agents sidecar profile before installing.
+**`test.sh` also catches conflicts automatically** before installing.
 
-### What happens if names collide
+### What happens if names collide with Cerebras
 
-- **Cerebras collision:** At the next session start, the Cerebras hook silently runs
-  `rm -rf ~/.claude/skills/<your-skill>` and replaces your symlink with its own. Your
-  files in this repo are untouched, but the skill stops working until you rename it and
-  re-run `./setup.sh`. No warning is given.
+At the next session start, the Cerebras hook silently runs
+`rm -rf ~/.claude/skills/<your-skill>` and replaces your symlink with its own. Your
+files in this repo are untouched, but the skill stops working until you rename it and
+re-run `./setup.sh`. No warning is given.
 
-- **Agents collision:** Your symlink survives, but agents also injects the same skill
-  via the system prompt. Claude sees two conflicting definitions — behavior is undefined.
-
-`test.sh` will flag both cases. If you hit a collision after the fact, rename the skill
-directory, update `name:` in its frontmatter to match, and re-run `./setup.sh`.
+If you hit a collision after the fact, rename the skill directory, update `name:` in
+its frontmatter to match, and re-run `./setup.sh`.
 
 ### Other rules
 
@@ -133,5 +129,7 @@ directory, update `name:` in its frontmatter to match, and re-run `./setup.sh`.
 `setup.sh` symlinks each `skills/<name>/` directory into `~/.claude/skills/`.
 Claude Code scans that directory at startup to discover skills.
 
-The Cerebras session-start hook only removes *dangling* symlinks (broken targets),
-so personal symlinks with unique names survive every Cerebras sync.
+Cerebras skills are symlinked into `~/.claude/skills/` from `cerebras-skills-repo`;
+agents skills are injected separately and never touch `~/.claude/skills/`. Personal
+skill symlinks with unique names survive every Cerebras sync — the hook only clobbers
+entries whose names match something in the Cerebras registry.
