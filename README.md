@@ -89,26 +89,18 @@ git push
 
 ### Picking a name — check first
 
-Cerebras team skills are symlinked into `~/.claude/skills/` at session start, so that
-directory shows you all names that are taken:
+The safest check is just running `./test.sh` — it checks both systems automatically.
 
-```bash
-ls ~/.claude/skills/
-```
+To manually inspect what's taken:
 
-Or type `/` in Claude Code and browse the autocomplete list.
+- **Cerebras**: skills are symlinked into `~/.claude/skills/` at session start, so `ls ~/.claude/skills/` shows all current Cerebras names. Or type `/` in Claude Code and browse autocomplete.
+- **Agents**: skills live in `.agents/skills/` inside agent-wired repos (e.g. monolith) and are never installed into `~/.claude/skills/`. Check `.agents/.sidecar-profile.json` if you're working in one of those repos. `test.sh` does this automatically if a sidecar profile is found.
 
-**`test.sh` also catches conflicts automatically** before installing.
+### What happens if names collide
 
-### What happens if names collide with Cerebras
+- **Cerebras collision — destructive**: At the next session start, the Cerebras hook silently runs `rm -rf ~/.claude/skills/<your-skill>` and replaces your symlink with its own. Your files in this repo are untouched, but the skill stops working. Rename the skill directory, update `name:` in its frontmatter, and re-run `./setup.sh`.
 
-At the next session start, the Cerebras hook silently runs
-`rm -rf ~/.claude/skills/<your-skill>` and replaces your symlink with its own. Your
-files in this repo are untouched, but the skill stops working until you rename it and
-re-run `./setup.sh`. No warning is given.
-
-If you hit a collision after the fact, rename the skill directory, update `name:` in
-its frontmatter to match, and re-run `./setup.sh`.
+- **Agents collision — silent shadow**: Agents skills are never installed into `~/.claude/skills/`, so there's no overwrite. But if names match, your personal skill takes precedence and the agents version becomes unreachable. Rename one of them to resolve it.
 
 ### Other rules
 
@@ -130,7 +122,8 @@ its frontmatter to match, and re-run `./setup.sh`.
 `setup.sh` symlinks each `skills/<name>/` directory into `~/.claude/skills/`.
 Claude Code scans that directory at startup to discover skills.
 
-Cerebras skills are symlinked into `~/.claude/skills/` from `cerebras-skills-repo`;
-agents skills are injected separately and never touch `~/.claude/skills/`. Personal
-skill symlinks with unique names survive every Cerebras sync — the hook only clobbers
-entries whose names match something in the Cerebras registry.
+Cerebras skills are symlinked into `~/.claude/skills/` from `cerebras-skills-repo`.
+Agents skills live in `.agents/skills/` inside agent-wired repos and are never
+installed into `~/.claude/skills/`. Personal skill symlinks survive every Cerebras
+sync — the hook only clobbers entries whose names match something in the Cerebras
+registry.
