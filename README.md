@@ -11,7 +11,7 @@ Works standalone or alongside Cerebras team skills and agents. Does not modify
 
 ```bash
 # Fork this repo on GitHub, then:
-git clone git@github.com:YOUR_USERNAME/personal-skills.git ~/personal-skills
+git clone git@github-cerebras:pearlh-cerebras/personal-skills.git ~/personal-skills
 cd ~/personal-skills
 chmod +x setup.sh sync.sh test.sh
 ./setup.sh
